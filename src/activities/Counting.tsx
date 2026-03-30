@@ -13,7 +13,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'ગણતરીની મજા', instruction: 'અહીં કેટલી વસ્તુઓ છે?' },
 };
 
-export default function Counting({ language, onComplete, onBack }: ActivityProps) {
+export default function Counting({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [count, setCount] = useState(0);
   const [emoji, setEmoji] = useState('');
   const [options, setOptions] = useState<number[]>([]);
@@ -41,10 +41,9 @@ export default function Counting({ language, onComplete, onBack }: ActivityProps
     if (opt === count) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Yay! Correct!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
-        // Maybe onComplete after a few rounds, but let's just keep it endless or 1 round.
-        // Let's do endless for now, or user can go back.
       }, 1500);
     } else {
       playAudio('Oops! Try again.', 'en-IN');
@@ -70,14 +69,14 @@ export default function Counting({ language, onComplete, onBack }: ActivityProps
           ))}
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex gap-4 sm:gap-6 flex-wrap justify-center">
           {options.map((opt, i) => (
             <motion.button
               key={i}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(opt)}
-              className="w-24 h-24 text-4xl font-bold bg-white rounded-3xl shadow-lg text-indigo-600 border-4 border-indigo-100 hover:border-indigo-300 transition-colors"
+              className="w-20 h-20 sm:w-24 sm:h-24 text-3xl sm:text-4xl font-bold bg-white rounded-3xl shadow-lg text-indigo-600 border-4 border-indigo-100 hover:border-indigo-300 transition-colors"
             >
               {opt}
             </motion.button>

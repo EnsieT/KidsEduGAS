@@ -13,7 +13,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'પેટર્ન કોયડો', instruction: 'આગળ શું આવશે?' },
 };
 
-export default function Patterns({ language, onComplete, onBack }: ActivityProps) {
+export default function Patterns({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [pattern, setPattern] = useState<string[]>([]);
   const [target, setTarget] = useState('');
   const [options, setOptions] = useState<string[]>([]);
@@ -45,6 +45,7 @@ export default function Patterns({ language, onComplete, onBack }: ActivityProps
     if (opt === target) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Super!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);
@@ -58,29 +59,29 @@ export default function Patterns({ language, onComplete, onBack }: ActivityProps
       <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={onBack} />
       
       <div className="flex-1 flex flex-col items-center justify-center gap-16">
-        <div className="flex items-center gap-4 bg-white px-12 py-8 rounded-full shadow-xl border-4 border-emerald-100">
+        <div className="flex items-center gap-2 sm:gap-4 bg-white px-6 sm:px-12 py-4 sm:py-8 rounded-full shadow-xl border-4 border-emerald-100">
           {pattern.map((emoji, i) => (
             <motion.span 
               key={i} 
               initial={{ scale: 0 }} 
               animate={{ scale: 1 }} 
               transition={{ delay: i * 0.1 }}
-              className="text-6xl"
+              className="text-4xl sm:text-6xl"
             >
               {emoji}
             </motion.span>
           ))}
-          <span className="text-6xl text-slate-300 ml-4">❓</span>
+          <span className="text-4xl sm:text-6xl text-slate-300 ml-2 sm:ml-4">❓</span>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           {options.map((opt, i) => (
             <motion.button
               key={i}
               whileHover={{ scale: 1.1, y: -10 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(opt)}
-              className="w-32 h-32 bg-emerald-50 text-white rounded-3xl shadow-lg border-4 border-emerald-200 flex items-center justify-center text-7xl font-bold hover:bg-emerald-100 transition-all"
+              className="w-24 h-24 sm:w-32 sm:h-32 bg-emerald-50 text-white rounded-3xl shadow-lg border-4 border-emerald-200 flex items-center justify-center text-5xl sm:text-7xl font-bold hover:bg-emerald-100 transition-all"
             >
               {opt}
             </motion.button>

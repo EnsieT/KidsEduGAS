@@ -13,7 +13,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'સૌથી અલગ શોધો', instruction: 'સૌથી અલગ શોધો' },
 };
 
-export default function OddOneOut({ language, onComplete, onBack }: ActivityProps) {
+export default function OddOneOut({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [items, setItems] = useState<{ emoji: string; isOdd: boolean }[]>([]);
   const t = TRANSLATIONS[language];
 
@@ -41,6 +41,7 @@ export default function OddOneOut({ language, onComplete, onBack }: ActivityProp
     if (isOdd) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('You found it!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);
@@ -54,7 +55,7 @@ export default function OddOneOut({ language, onComplete, onBack }: ActivityProp
       <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={onBack} />
       
       <div className="flex-1 flex flex-col items-center justify-center gap-16">
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-4 sm:gap-8">
           {items.map((item, i) => (
             <motion.button
               key={i}
@@ -64,7 +65,7 @@ export default function OddOneOut({ language, onComplete, onBack }: ActivityProp
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(item.isOdd)}
-              className="w-40 h-40 bg-white rounded-3xl shadow-xl border-4 border-orange-100 flex items-center justify-center text-8xl hover:border-orange-400 hover:bg-orange-50 transition-all"
+              className="w-32 h-32 sm:w-40 sm:h-40 bg-white rounded-3xl shadow-xl border-4 border-orange-100 flex items-center justify-center text-6xl sm:text-8xl hover:border-orange-400 hover:bg-orange-50 transition-all"
             >
               {item.emoji}
             </motion.button>

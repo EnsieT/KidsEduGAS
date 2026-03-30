@@ -13,7 +13,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'કદ પ્રમાણે ગોઠવો', instruction: 'સૌથી મોટું શોધો' },
 };
 
-export default function SizeSorting({ language, onComplete, onBack }: ActivityProps) {
+export default function SizeSorting({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [items, setItems] = useState<{ id: number; emoji: string; scale: number; isBiggest: boolean }[]>([]);
   const t = TRANSLATIONS[language];
 
@@ -41,6 +41,7 @@ export default function SizeSorting({ language, onComplete, onBack }: ActivityPr
     if (isBiggest) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Fantastic!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);

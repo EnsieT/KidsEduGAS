@@ -13,7 +13,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'અક્ષર મેળવો', instruction: 'મોટા અક્ષરને નાના અક્ષર સાથે મેળવો' },
 };
 
-export default function Alphabet({ language, onComplete, onBack }: ActivityProps) {
+export default function Alphabet({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [targetLetter, setTargetLetter] = useState('A');
   const [options, setOptions] = useState<string[]>([]);
   const t = TRANSLATIONS[language];
@@ -39,6 +39,7 @@ export default function Alphabet({ language, onComplete, onBack }: ActivityProps
     if (opt === targetLetter.toLowerCase()) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Excellent!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);
@@ -55,19 +56,19 @@ export default function Alphabet({ language, onComplete, onBack }: ActivityProps
         <motion.div
           initial={{ scale: 0, rotate: -10 }}
           animate={{ scale: 1, rotate: 0 }}
-          className="w-48 h-48 bg-fuchsia-500 text-white rounded-[2rem] shadow-2xl flex items-center justify-center text-9xl font-black border-8 border-fuchsia-300"
+          className="w-32 h-32 sm:w-48 sm:h-48 bg-fuchsia-500 text-white rounded-[2rem] shadow-2xl flex items-center justify-center text-7xl sm:text-9xl font-black border-8 border-fuchsia-300"
         >
           {targetLetter}
         </motion.div>
 
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           {options.map((opt, i) => (
             <motion.button
               key={i}
               whileHover={{ scale: 1.1, y: -10 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(opt)}
-              className="w-32 h-32 bg-white text-fuchsia-600 rounded-2xl shadow-lg border-4 border-fuchsia-100 flex items-center justify-center text-7xl font-bold hover:border-fuchsia-400 hover:bg-fuchsia-50 transition-all"
+              className="w-24 h-24 sm:w-32 sm:h-32 bg-white text-fuchsia-600 rounded-2xl shadow-lg border-4 border-fuchsia-100 flex items-center justify-center text-5xl sm:text-7xl font-bold hover:border-fuchsia-400 hover:bg-fuchsia-50 transition-all"
             >
               {opt}
             </motion.button>

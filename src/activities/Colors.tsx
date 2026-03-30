@@ -20,7 +20,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'રંગ મેળવો', instruction: 'મેળ ખાતો રંગ શોધો' },
 };
 
-export default function Colors({ language, onComplete, onBack }: ActivityProps) {
+export default function Colors({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [targetColor, setTargetColor] = useState(COLORS[0]);
   const [options, setOptions] = useState<typeof COLORS>([]);
   const t = TRANSLATIONS[language];
@@ -46,6 +46,7 @@ export default function Colors({ language, onComplete, onBack }: ActivityProps) 
     if (opt.name === targetColor.name) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Great job!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);

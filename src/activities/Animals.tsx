@@ -20,7 +20,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'પ્રાણી મિત્રો', instruction: 'સાચું પ્રાણી શોધો' },
 };
 
-export default function Animals({ language, onComplete, onBack }: ActivityProps) {
+export default function Animals({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [targetAnimal, setTargetAnimal] = useState(ANIMALS[0]);
   const [options, setOptions] = useState<typeof ANIMALS>([]);
   const t = TRANSLATIONS[language];
@@ -46,6 +46,7 @@ export default function Animals({ language, onComplete, onBack }: ActivityProps)
     if (opt.en === targetAnimal.en) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Good job!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);
@@ -68,19 +69,19 @@ export default function Animals({ language, onComplete, onBack }: ActivityProps)
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="text-6xl font-bold text-amber-600 bg-amber-100 px-12 py-6 rounded-full shadow-lg border-4 border-amber-200"
+          className="text-4xl sm:text-6xl font-bold text-amber-600 bg-amber-100 px-8 sm:px-12 py-4 sm:py-6 rounded-full shadow-lg border-4 border-amber-200 text-center"
         >
           {getTargetName()}
         </motion.div>
 
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           {options.map((opt, i) => (
             <motion.button
               key={i}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(opt)}
-              className="w-32 h-32 text-7xl bg-white rounded-3xl shadow-xl border-4 border-slate-100 hover:border-amber-300 transition-colors flex items-center justify-center"
+              className="w-24 h-24 sm:w-32 sm:h-32 text-6xl sm:text-7xl bg-white rounded-3xl shadow-xl border-4 border-slate-100 hover:border-amber-300 transition-colors flex items-center justify-center"
             >
               {opt.emoji}
             </motion.button>

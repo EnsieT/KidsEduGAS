@@ -20,7 +20,7 @@ interface Card {
   isMatched: boolean;
 }
 
-export default function Memory({ language, onComplete, onBack }: ActivityProps) {
+export default function Memory({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [isLocked, setIsLocked] = useState(false);
@@ -68,6 +68,7 @@ export default function Memory({ language, onComplete, onBack }: ActivityProps) 
           if (matchedCards.every(c => c.isMatched)) {
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             playAudio('You did it!', 'en-IN');
+            if (onScore) onScore(10);
             setTimeout(generateLevel, 2000);
           } else {
             playAudio('Match!', 'en-IN');
@@ -98,7 +99,7 @@ export default function Memory({ language, onComplete, onBack }: ActivityProps) 
               whileHover={{ scale: card.isFlipped || card.isMatched ? 1 : 1.05 }}
               whileTap={{ scale: card.isFlipped || card.isMatched ? 1 : 0.95 }}
               onClick={() => handleCardClick(i)}
-              className={`w-24 h-24 sm:w-32 sm:h-32 rounded-2xl shadow-lg border-4 flex items-center justify-center text-5xl sm:text-6xl transition-all duration-300 ${
+              className={`w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-2xl shadow-lg border-4 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl transition-all duration-300 ${
                 card.isFlipped || card.isMatched 
                   ? 'bg-white border-teal-200 rotate-y-180' 
                   : 'bg-teal-400 border-teal-500 text-transparent'

@@ -18,7 +18,7 @@ const TRANSLATIONS = {
   'gu-IN': { title: 'આકાર મેળવો', instruction: 'આકારો મેળવો' },
 };
 
-export default function Shapes({ language, onComplete, onBack }: ActivityProps) {
+export default function Shapes({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [targetShape, setTargetShape] = useState(SHAPES[0]);
   const [options, setOptions] = useState<typeof SHAPES>([]);
   const t = TRANSLATIONS[language];
@@ -44,6 +44,7 @@ export default function Shapes({ language, onComplete, onBack }: ActivityProps) 
     if (opt.name === targetShape.name) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Awesome!', 'en-IN');
+      if (onScore) onScore(10);
       setTimeout(() => {
         generateLevel();
       }, 1500);
@@ -60,23 +61,23 @@ export default function Shapes({ language, onComplete, onBack }: ActivityProps) 
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          className="w-48 h-48 bg-slate-200 rounded-3xl flex items-center justify-center shadow-inner border-4 border-dashed border-slate-400"
+          className="w-32 h-32 sm:w-48 sm:h-48 bg-slate-200 rounded-3xl flex items-center justify-center shadow-inner border-4 border-dashed border-slate-400"
         >
-          <svg viewBox="0 0 100 100" className="w-32 h-32 fill-slate-300">
+          <svg viewBox="0 0 100 100" className="w-20 h-20 sm:w-32 sm:h-32 fill-slate-300">
             <path d={targetShape.path} />
           </svg>
         </motion.div>
 
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
           {options.map((opt, i) => (
             <motion.button
               key={i}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(opt)}
-              className="w-32 h-32 bg-white rounded-2xl shadow-lg border-4 border-sky-200 flex items-center justify-center hover:border-sky-400 transition-colors"
+              className="w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-2xl shadow-lg border-4 border-sky-200 flex items-center justify-center hover:border-sky-400 transition-colors"
             >
-              <svg viewBox="0 0 100 100" className="w-20 h-20 fill-sky-500">
+              <svg viewBox="0 0 100 100" className="w-16 h-16 sm:w-20 sm:h-20 fill-sky-500">
                 <path d={opt.path} />
               </svg>
             </motion.button>
