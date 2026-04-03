@@ -21,6 +21,8 @@ const NOTES = [
   { note: 'C', freq: 523.25, color: 'bg-fuchsia-400' },
 ];
 
+let audioCtx: AudioContext | null = null;
+
 export default function MusicMaker({ language, onBack }: ActivityProps) {
   const t = TRANSLATIONS[language];
 
@@ -29,24 +31,31 @@ export default function MusicMaker({ language, onBack }: ActivityProps) {
   }, []);
 
   const playNote = (freq: number) => {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContext) return;
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      audioCtx = new AudioContextClass();
+    }
     
-    const ctx = new AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    // Resume context if it was suspended (e.g., by browser autoplay policy)
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+    
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
     
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
     
-    gain.gain.setValueAtTime(0.5, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1);
+    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1);
     
     osc.connect(gain);
-    gain.connect(ctx.destination);
+    gain.connect(audioCtx.destination);
     
     osc.start();
-    osc.stop(ctx.currentTime + 1);
+    osc.stop(audioCtx.currentTime + 1);
   };
 
   return (

@@ -17,6 +17,7 @@ export default function Counting({ language, onComplete, onBack, onScore }: Acti
   const [count, setCount] = useState(0);
   const [emoji, setEmoji] = useState('');
   const [options, setOptions] = useState<number[]>([]);
+  const [round, setRound] = useState(0);
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
@@ -42,8 +43,16 @@ export default function Counting({ language, onComplete, onBack, onScore }: Acti
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Yay! Correct!', 'en-IN');
       if (onScore) onScore(10);
+      
+      const nextRound = round + 1;
+      setRound(nextRound);
+      
       setTimeout(() => {
-        generateLevel();
+        if (nextRound >= 5) {
+          onComplete();
+        } else {
+          generateLevel();
+        }
       }, 1500);
     } else {
       playAudio('Oops! Try again.', 'en-IN');

@@ -24,6 +24,7 @@ export default function Memory({ language, onComplete, onBack, onScore }: Activi
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedIndices, setFlippedIndices] = useState<number[]>([]);
   const [isLocked, setIsLocked] = useState(false);
+  const [round, setRound] = useState(0);
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
@@ -69,7 +70,17 @@ export default function Memory({ language, onComplete, onBack, onScore }: Activi
             confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
             playAudio('You did it!', 'en-IN');
             if (onScore) onScore(10);
-            setTimeout(generateLevel, 2000);
+            
+            const nextRound = round + 1;
+            setRound(nextRound);
+            
+            setTimeout(() => {
+              if (nextRound >= 5) {
+                onComplete();
+              } else {
+                generateLevel();
+              }
+            }, 2000);
           } else {
             playAudio('Match!', 'en-IN');
           }

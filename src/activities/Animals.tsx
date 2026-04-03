@@ -23,6 +23,7 @@ const TRANSLATIONS = {
 export default function Animals({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [targetAnimal, setTargetAnimal] = useState(ANIMALS[0]);
   const [options, setOptions] = useState<typeof ANIMALS>([]);
+  const [round, setRound] = useState(0);
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
@@ -47,8 +48,16 @@ export default function Animals({ language, onComplete, onBack, onScore }: Activ
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Good job!', 'en-IN');
       if (onScore) onScore(10);
+      
+      const nextRound = round + 1;
+      setRound(nextRound);
+      
       setTimeout(() => {
-        generateLevel();
+        if (nextRound >= 5) {
+          onComplete();
+        } else {
+          generateLevel();
+        }
       }, 1500);
     } else {
       playAudio('Try again.', 'en-IN');

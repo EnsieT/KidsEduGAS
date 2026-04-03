@@ -123,7 +123,12 @@ export default function ColorByNumber({ language, onComplete, onBack, onScore }:
         if (onScore) onScore(10);
         setTimeout(() => {
           setFilled({});
-          setCurrentLevel((prev) => (prev + 1) % LEVELS.length);
+          const nextLevel = currentLevel + 1;
+          if (nextLevel >= LEVELS.length) {
+            onComplete();
+          } else {
+            setCurrentLevel(nextLevel);
+          }
         }, 3000);
       }
     } else {

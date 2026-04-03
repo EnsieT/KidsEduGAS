@@ -15,6 +15,7 @@ export default function MathActivity({ language, onComplete, onBack, onScore }: 
   const [num1, setNum1] = useState(1);
   const [num2, setNum2] = useState(1);
   const [options, setOptions] = useState<number[]>([]);
+  const [round, setRound] = useState(0);
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
@@ -42,8 +43,16 @@ export default function MathActivity({ language, onComplete, onBack, onScore }: 
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('You are a genius!', 'en-IN');
       if (onScore) onScore(10);
+      
+      const nextRound = round + 1;
+      setRound(nextRound);
+      
       setTimeout(() => {
-        generateLevel();
+        if (nextRound >= 5) {
+          onComplete();
+        } else {
+          generateLevel();
+        }
       }, 1500);
     } else {
       playAudio('Try again.', 'en-IN');

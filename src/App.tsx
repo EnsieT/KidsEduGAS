@@ -15,7 +15,11 @@ import {
   PaintBucket,
   LayoutGrid,
   Music,
-  Star
+  Star,
+  Target,
+  BookOpen,
+  Palette,
+  Maximize
 } from 'lucide-react';
 
 import Counting from './activities/Counting';
@@ -30,6 +34,10 @@ import Maze from './activities/Maze';
 import ColorByNumber from './activities/ColorByNumber';
 import Jigsaw from './activities/Jigsaw';
 import MusicMaker from './activities/MusicMaker';
+import BalloonPop from './activities/BalloonPop';
+import WordMatch from './activities/WordMatch';
+import Colors from './activities/Colors';
+import SizeSorting from './activities/SizeSorting';
 
 const ACTIVITIES = [
   { id: 'counting', icon: Hash, color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
@@ -44,11 +52,16 @@ const ACTIVITIES = [
   { id: 'maze', icon: Route, color: 'bg-lime-400', en: 'Maze', hi: 'भूलभुलैया', gu: 'ભૂલભુલામણી', component: Maze },
   { id: 'jigsaw', icon: LayoutGrid, color: 'bg-sky-400', en: 'Jigsaw', hi: 'जिगसॉ', gu: 'જીગ્સૉ', component: Jigsaw },
   { id: 'music', icon: Music, color: 'bg-violet-400', en: 'Music', hi: 'संगीत', gu: 'સંગીત', component: MusicMaker },
+  { id: 'balloon', icon: Target, color: 'bg-pink-400', en: 'Balloon Pop', hi: 'गुब्बारे', gu: 'ફુગ્ગા', component: BalloonPop },
+  { id: 'wordmatch', icon: BookOpen, color: 'bg-yellow-500', en: 'Word Match', hi: 'शब्द मिलान', gu: 'શબ્દ મેળવો', component: WordMatch },
+  { id: 'colors', icon: Palette, color: 'bg-red-400', en: 'Colors', hi: 'रंग', gu: 'રંગ', component: Colors },
+  { id: 'sizes', icon: Maximize, color: 'bg-indigo-500', en: 'Size Sorting', hi: 'आकार छाँटें', gu: 'કદ પ્રમાણે ગોઠવો', component: SizeSorting },
 ];
 
 export default function App() {
   const [language, setLanguage] = useState<Language>('en-IN');
   const [currentActivity, setCurrentActivity] = useState<string | null>(null);
+  const [showCompletion, setShowCompletion] = useState(false);
   const [score, setScore] = useState<number>(() => {
     const saved = localStorage.getItem('edufun_score');
     return saved ? parseInt(saved, 10) : 0;
@@ -65,6 +78,20 @@ export default function App() {
   const handleActivitySelect = (id: string, name: string) => {
     playAudio(`Let's play ${name}`, language);
     setCurrentActivity(id);
+    setShowCompletion(false);
+  };
+
+  const handleComplete = () => {
+    import('canvas-confetti').then((confetti) => {
+      confetti.default({
+        particleCount: 300,
+        spread: 100,
+        origin: { y: 0.3 },
+        colors: ['#fde047', '#a78bfa', '#f472b6', '#38bdf8', '#4ade80']
+      });
+    });
+    playAudio('Activity Completed! Great job!', language);
+    setShowCompletion(true);
   };
 
   const ActiveComponent = ACTIVITIES.find(a => a.id === currentActivity)?.component;
@@ -146,6 +173,39 @@ export default function App() {
                   );
                 })}
               </motion.div>
+            ) : showCompletion ? (
+              <motion.div
+                key="completion"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="flex-1 bg-white/80 backdrop-blur-xl rounded-[3rem] p-8 shadow-2xl border-4 border-yellow-300 flex flex-col items-center justify-center text-center min-h-[500px]"
+              >
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 10, 0], scale: [1, 1.2, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="text-8xl mb-8"
+                >
+                  🏆
+                </motion.div>
+                <h2 className="text-4xl sm:text-5xl font-black text-indigo-600 mb-4">
+                  {language === 'en-IN' ? 'Activity Completed!' : language === 'hi-IN' ? 'गतिविधि पूरी हुई!' : 'પ્રવૃત્તિ પૂર્ણ!'}
+                </h2>
+                <p className="text-2xl text-slate-600 mb-12 font-bold">
+                  {language === 'en-IN' ? 'You earned stars!' : language === 'hi-IN' ? 'आपको सितारे मिले!' : 'તમે સ્ટાર્સ કમાવ્યા!'}
+                </p>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    setShowCompletion(false);
+                    setCurrentActivity(null);
+                  }}
+                  className="bg-indigo-500 text-white px-8 py-4 rounded-full text-2xl font-bold shadow-lg hover:bg-indigo-600 hover:shadow-xl transition-all"
+                >
+                  {language === 'en-IN' ? 'Play More' : language === 'hi-IN' ? 'और खेलें' : 'વધુ રમો'}
+                </motion.button>
+              </motion.div>
             ) : (
               <motion.div
                 key="activity"
@@ -157,7 +217,7 @@ export default function App() {
                 {ActiveComponent && (
                   <ActiveComponent 
                     language={language} 
-                    onComplete={() => {}} 
+                    onComplete={handleComplete} 
                     onBack={() => setCurrentActivity(null)} 
                     onScore={handleScore}
                     score={score}

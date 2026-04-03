@@ -16,6 +16,7 @@ const TRANSLATIONS = {
 export default function Alphabet({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [targetLetter, setTargetLetter] = useState('A');
   const [options, setOptions] = useState<string[]>([]);
+  const [round, setRound] = useState(0);
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
@@ -40,8 +41,16 @@ export default function Alphabet({ language, onComplete, onBack, onScore }: Acti
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Excellent!', 'en-IN');
       if (onScore) onScore(10);
+      
+      const nextRound = round + 1;
+      setRound(nextRound);
+      
       setTimeout(() => {
-        generateLevel();
+        if (nextRound >= 5) {
+          onComplete();
+        } else {
+          generateLevel();
+        }
       }, 1500);
     } else {
       playAudio('Try again.', 'en-IN');

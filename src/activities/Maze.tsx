@@ -106,9 +106,13 @@ export default function Maze({ language, onComplete, onBack, onScore }: Activity
           playAudio('You made it!', 'en-IN');
           if (onScore) onScore(10);
           setTimeout(() => {
-            const nextLevel = (currentLevel + 1) % LEVELS.length;
-            setCurrentLevel(nextLevel);
-            setPos(LEVELS[nextLevel].start);
+            const nextLevel = currentLevel + 1;
+            if (nextLevel >= LEVELS.length) {
+              onComplete();
+            } else {
+              setCurrentLevel(nextLevel);
+              setPos(LEVELS[nextLevel].start);
+            }
           }, 2000);
         }
         return { x: newX, y: newY };

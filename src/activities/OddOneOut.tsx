@@ -15,6 +15,7 @@ const TRANSLATIONS = {
 
 export default function OddOneOut({ language, onComplete, onBack, onScore }: ActivityProps) {
   const [items, setItems] = useState<{ emoji: string; isOdd: boolean }[]>([]);
+  const [round, setRound] = useState(0);
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
@@ -42,8 +43,16 @@ export default function OddOneOut({ language, onComplete, onBack, onScore }: Act
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('You found it!', 'en-IN');
       if (onScore) onScore(10);
+      
+      const nextRound = round + 1;
+      setRound(nextRound);
+      
       setTimeout(() => {
-        generateLevel();
+        if (nextRound >= 5) {
+          onComplete();
+        } else {
+          generateLevel();
+        }
       }, 1500);
     } else {
       playAudio('Try again.', 'en-IN');
