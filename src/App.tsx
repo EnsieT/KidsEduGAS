@@ -34,10 +34,11 @@ import Maze from './activities/Maze';
 import ColorByNumber from './activities/ColorByNumber';
 import Jigsaw from './activities/Jigsaw';
 import MusicMaker from './activities/MusicMaker';
-import BalloonPop from './activities/BalloonPop';
 import WordMatch from './activities/WordMatch';
 import Colors from './activities/Colors';
 import SizeSorting from './activities/SizeSorting';
+
+import PhonicsReader from './activities/PhonicsReader';
 
 const ACTIVITIES = [
   { id: 'counting', icon: Hash, color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
@@ -45,14 +46,14 @@ const ACTIVITIES = [
   { id: 'shapes', icon: ShapesIcon, color: 'bg-emerald-400', en: 'Shapes', hi: 'आकार', gu: 'આકાર', component: Shapes },
   { id: 'animals', icon: Cat, color: 'bg-amber-400', en: 'Animals', hi: 'जानवर', gu: 'પ્રાણીઓ', component: Animals },
   { id: 'alphabet', icon: Type, color: 'bg-fuchsia-400', en: 'Alphabet', hi: 'वर्णमाला', gu: 'મૂળાક્ષરો', component: Alphabet },
+  { id: 'phonics', icon: BookOpen, color: 'bg-indigo-400', en: 'Phonics', hi: 'फ़ोनिक्स', gu: 'ફોનિક્સ', component: PhonicsReader },
   { id: 'math', icon: Calculator, color: 'bg-indigo-400', en: 'Math', hi: 'गणित', gu: 'ગણિત', component: MathActivity },
   { id: 'patterns', icon: Puzzle, color: 'bg-teal-400', en: 'Patterns', hi: 'पैटर्न', gu: 'પેટર્ન', component: Patterns },
-  { id: 'odd', icon: Search, color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી અલગ', component: OddOneOut },
+  { id: 'odd', icon: Search, color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી अलग', component: OddOneOut },
   { id: 'memory', icon: Brain, color: 'bg-cyan-400', en: 'Memory', hi: 'याददाश्त', gu: 'યાદશક્તિ', component: Memory },
   { id: 'maze', icon: Route, color: 'bg-lime-400', en: 'Maze', hi: 'भूलभुलैया', gu: 'ભૂલભુલામણી', component: Maze },
   { id: 'jigsaw', icon: LayoutGrid, color: 'bg-sky-400', en: 'Jigsaw', hi: 'जिगसॉ', gu: 'જીગ્સૉ', component: Jigsaw },
   { id: 'music', icon: Music, color: 'bg-violet-400', en: 'Music', hi: 'संगीत', gu: 'સંગીત', component: MusicMaker },
-  { id: 'balloon', icon: Target, color: 'bg-pink-400', en: 'Balloon Pop', hi: 'गुब्बारे', gu: 'ફુગ્ગા', component: BalloonPop },
   { id: 'wordmatch', icon: BookOpen, color: 'bg-yellow-500', en: 'Word Match', hi: 'शब्द मिलान', gu: 'શબ્દ મેળવો', component: WordMatch },
   { id: 'colors', icon: Palette, color: 'bg-red-400', en: 'Colors', hi: 'रंग', gu: 'રંગ', component: Colors },
   { id: 'sizes', icon: Maximize, color: 'bg-indigo-500', en: 'Size Sorting', hi: 'आकार छाँटें', gu: 'કદ પ્રમાણે ગોઠવો', component: SizeSorting },
