@@ -19,7 +19,12 @@ const LEVELS = [
     start: { x: 0, y: 0 },
     end: { x: 5, y: 5 },
     player: '🐶',
-    target: '🏠'
+    target: '🏠',
+    instruction: {
+      'en-IN': 'Help the dog reach the house',
+      'hi-IN': 'कुत्ते को घर तक पहुँचने में मदद करें',
+      'gu-IN': 'કૂતરાને ઘર સુધી પહોંચવામાં મદદ કરો'
+    }
   },
   {
     maze: [
@@ -33,7 +38,12 @@ const LEVELS = [
     start: { x: 0, y: 0 },
     end: { x: 5, y: 5 },
     player: '🐰',
-    target: '🥕'
+    target: '🥕',
+    instruction: {
+      'en-IN': 'Help the rabbit reach the carrot',
+      'hi-IN': 'खरगोश को गाजर तक पहुँचने में मदद करें',
+      'gu-IN': 'સસલાને ગાજર સુધી પહોંચવામાં મદદ કરો'
+    }
   },
   {
     maze: [
@@ -47,7 +57,12 @@ const LEVELS = [
     start: { x: 0, y: 0 },
     end: { x: 5, y: 5 },
     player: '🐵',
-    target: '🍌'
+    target: '🍌',
+    instruction: {
+      'en-IN': 'Help the monkey reach the banana',
+      'hi-IN': 'बंदर को केले तक पहुँचने में मदद करें',
+      'gu-IN': 'વાંદરાને કેળા સુધી પહોંચવામાં મદદ કરો'
+    }
   },
   {
     maze: [
@@ -61,7 +76,12 @@ const LEVELS = [
     start: { x: 0, y: 0 },
     end: { x: 5, y: 5 },
     player: '🚗',
-    target: '🏁'
+    target: '🏁',
+    instruction: {
+      'en-IN': 'Help the car reach the finish line',
+      'hi-IN': 'कार को फिनिश लाइन तक पहुँचने में मदद करें',
+      'gu-IN': 'કારને ફિનિશ લાઇન સુધી પહોંચવામાં મદદ કરો'
+    }
   },
   {
     maze: [
@@ -75,14 +95,19 @@ const LEVELS = [
     start: { x: 0, y: 0 },
     end: { x: 5, y: 5 },
     player: '🚀',
-    target: '🌕'
+    target: '🌕',
+    instruction: {
+      'en-IN': 'Help the rocket reach the moon',
+      'hi-IN': 'रॉकेट को चाँद तक पहुँचने में मदद करें',
+      'gu-IN': 'રોકેટને ચંદ્ર સુધી પહોંચવામાં મદદ કરો'
+    }
   }
 ];
 
 const TRANSLATIONS = {
-  'en-IN': { title: 'Maze Explorer', instruction: 'Help the dog reach the house' },
-  'hi-IN': { title: 'भूलभुलैया', instruction: 'कुत्ते को घर तक पहुँचने में मदद करें' },
-  'gu-IN': { title: 'ભૂલભુલામણી', instruction: 'કૂતરાને ઘર સુધી પહોંચવામાં મદદ કરો' },
+  'en-IN': { title: 'Maze Explorer' },
+  'hi-IN': { title: 'भूलभुलैया' },
+  'gu-IN': { title: 'ભૂલભુલામણી' },
 };
 
 export default function Maze({ language, onComplete, onBack, onScore }: ActivityProps) {
@@ -93,8 +118,8 @@ export default function Maze({ language, onComplete, onBack, onScore }: Activity
   const level = LEVELS[currentLevel];
 
   useEffect(() => {
-    playAudio(t.instruction, language);
-  }, [currentLevel]);
+    playAudio(level.instruction[language as keyof typeof level.instruction], language);
+  }, [currentLevel, language, level]);
 
   const move = useCallback((dx: number, dy: number) => {
     setPos(prev => {
@@ -134,7 +159,7 @@ export default function Maze({ language, onComplete, onBack, onScore }: Activity
 
   return (
     <div className="flex flex-col h-full">
-      <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={onBack} />
+      <ActivityHeader title={t.title} instruction={level.instruction[language as keyof typeof level.instruction]} language={language} onBack={onBack} />
       
       <div className="flex-1 flex flex-col items-center justify-center gap-8">
         <div className="bg-emerald-50 p-4 rounded-3xl shadow-inner border-4 border-emerald-200">
