@@ -70,8 +70,8 @@ export default function SizeSorting({ language, onComplete, onBack, onScore }: A
     <div className="flex flex-col h-full">
       <ActivityHeader title={t.title} instruction={currentInstruction} language={language} onBack={onBack} />
       
-      <div className="flex-1 flex flex-col items-center justify-center gap-16">
-        <div className="flex items-end justify-center gap-8 h-64">
+      <div className="flex-1 flex flex-col items-center justify-center gap-8 sm:gap-16 p-4">
+        <div className="flex flex-wrap items-end justify-center gap-4 sm:gap-8 min-h-[16rem]">
           {items.map((item) => (
             <motion.button
               key={item.id}
@@ -81,11 +81,11 @@ export default function SizeSorting({ language, onComplete, onBack, onScore }: A
               whileHover={{ scale: 1.1, y: -10 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => handleOptionClick(item.isTarget)}
-              className="bg-white rounded-3xl shadow-xl border-4 border-lime-100 flex items-center justify-center hover:border-lime-400 hover:bg-lime-50 transition-all"
+              className="bg-white rounded-3xl shadow-xl border-4 border-lime-100 flex items-center justify-center hover:border-lime-400 hover:bg-lime-50 transition-all shrink-0"
               style={{ 
-                width: `${item.scale * 100}px`, 
-                height: `${item.scale * 100}px`,
-                fontSize: `${item.scale * 3}rem`
+                width: `calc(${item.scale} * 4.5rem)`, 
+                height: `calc(${item.scale} * 4.5rem)`,
+                fontSize: `calc(${item.scale} * 2.2rem)`
               }}
             >
               {item.emoji}
