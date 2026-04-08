@@ -98,14 +98,20 @@ const IMAGES = [
 ];
 
 export default function Jigsaw({ language, onComplete, onBack, onScore }: ActivityProps) {
+  const [images, setImages] = useState<string[]>([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [pieces, setPieces] = useState<number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
-  const [imageUrl, setImageUrl] = useState(IMAGES[0]);
   const [showPreview, setShowPreview] = useState(false);
   const t = TRANSLATIONS[language];
 
+  useEffect(() => {
+    setImages([...IMAGES].sort(() => Math.random() - 0.5));
+  }, []);
+
+  const imageUrl = images[currentImageIndex];
+
   const generateLevel = () => {
-    setImageUrl(IMAGES[Math.floor(Math.random() * IMAGES.length)]);
     let newPieces = [0, 1, 2, 3, 4, 5, 6, 7, 8];
     // Shuffle
     for (let i = newPieces.length - 1; i > 0; i--) {
@@ -117,9 +123,11 @@ export default function Jigsaw({ language, onComplete, onBack, onScore }: Activi
   };
 
   useEffect(() => {
-    generateLevel();
-    playAudio(t.instruction, language);
-  }, []);
+    if (imageUrl) {
+      generateLevel();
+      playAudio(t.instruction, language);
+    }
+  }, [imageUrl, language, t.instruction]);
 
   const handlePieceClick = (index: number) => {
     if (selected === null) {
@@ -135,12 +143,21 @@ export default function Jigsaw({ language, onComplete, onBack, onScore }: Activi
         confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
         playAudio('Perfect picture!', 'en-IN');
         if (onScore) onScore(10);
-        setTimeout(generateLevel, 3000);
+        setTimeout(() => {
+          const nextIndex = currentImageIndex + 1;
+          if (nextIndex >= images.length) {
+            onComplete();
+          } else {
+            setCurrentImageIndex(nextIndex);
+          }
+        }, 3000);
       } else {
         playAudio('Click', 'en-IN');
       }
     }
   };
+
+  if (!imageUrl) return null;
 
   return (
     <div className="flex flex-col h-full">

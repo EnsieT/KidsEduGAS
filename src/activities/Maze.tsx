@@ -111,17 +111,27 @@ const TRANSLATIONS = {
 };
 
 export default function Maze({ language, onComplete, onBack, onScore }: ActivityProps) {
+  const [levels, setLevels] = useState<typeof LEVELS>([]);
   const [currentLevel, setCurrentLevel] = useState(0);
-  const [pos, setPos] = useState(LEVELS[0].start);
+  const [pos, setPos] = useState({ x: 0, y: 0 });
   const t = TRANSLATIONS[language];
 
-  const level = LEVELS[currentLevel];
+  useEffect(() => {
+    const shuffled = [...LEVELS].sort(() => Math.random() - 0.5);
+    setLevels(shuffled);
+    setPos(shuffled[0].start);
+  }, []);
+
+  const level = levels[currentLevel];
 
   useEffect(() => {
-    playAudio(level.instruction[language as keyof typeof level.instruction], language);
+    if (level) {
+      playAudio(level.instruction[language as keyof typeof level.instruction], language);
+    }
   }, [currentLevel, language, level]);
 
   const move = useCallback((dx: number, dy: number) => {
+    if (!level) return;
     setPos(prev => {
       const newX = prev.x + dx;
       const newY = prev.y + dy;
@@ -132,11 +142,11 @@ export default function Maze({ language, onComplete, onBack, onScore }: Activity
           if (onScore) onScore(10);
           setTimeout(() => {
             const nextLevel = currentLevel + 1;
-            if (nextLevel >= LEVELS.length) {
+            if (nextLevel >= levels.length) {
               onComplete();
             } else {
               setCurrentLevel(nextLevel);
-              setPos(LEVELS[nextLevel].start);
+              setPos(levels[nextLevel].start);
             }
           }, 2000);
         }
@@ -144,7 +154,7 @@ export default function Maze({ language, onComplete, onBack, onScore }: Activity
       }
       return prev;
     });
-  }, [currentLevel, level, onScore]);
+  }, [currentLevel, level, levels, onScore, onComplete]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -156,6 +166,8 @@ export default function Maze({ language, onComplete, onBack, onScore }: Activity
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [move]);
+
+  if (!level) return null;
 
   return (
     <div className="flex flex-col h-full">

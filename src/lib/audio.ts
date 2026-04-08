@@ -1,7 +1,17 @@
 import { Language } from '../types';
 
+export let isMuted = false;
+
+export const toggleMute = () => {
+  isMuted = !isMuted;
+  if (isMuted && window.speechSynthesis) {
+    window.speechSynthesis.cancel();
+  }
+  return isMuted;
+};
+
 export const playAudio = (text: string, lang: Language) => {
-  if (!window.speechSynthesis) return;
+  if (isMuted || !window.speechSynthesis) return;
   
   // Cancel any ongoing speech
   window.speechSynthesis.cancel();

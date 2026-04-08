@@ -1,4 +1,4 @@
-import { ArrowLeft, Volume2 } from 'lucide-react';
+import { ArrowLeft, PlayCircle } from 'lucide-react';
 import { Language } from '../types';
 import { playAudio } from '../lib/audio';
 
@@ -28,7 +28,7 @@ export function ActivityHeader({ title, instruction, language, onBack }: Activit
         className="p-3 bg-sky-100 text-sky-600 rounded-full hover:bg-sky-200 transition-colors animate-pulse"
         aria-label="Play Instruction"
       >
-        <Volume2 size={24} />
+        <PlayCircle size={24} />
       </button>
     </div>
   );

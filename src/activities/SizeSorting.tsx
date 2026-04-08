@@ -8,38 +8,43 @@ import { playAudio } from '../lib/audio';
 const EMOJIS = ['🍎', '🍌', '🚗', '🎈', '🐶', '🐱', '🧸', '🌟', '🌸', '🦋'];
 
 const TRANSLATIONS = {
-  'en-IN': { title: 'Size Sorter', instruction: 'Find the biggest one' },
-  'hi-IN': { title: 'आकार छाँटें', instruction: 'सबसे बड़ा खोजें' },
-  'gu-IN': { title: 'કદ પ્રમાણે ગોઠવો', instruction: 'સૌથી મોટું શોધો' },
+  'en-IN': { title: 'Size Sorter', instructionBiggest: 'Find the biggest one', instructionSmallest: 'Find the smallest one' },
+  'hi-IN': { title: 'आकार छाँटें', instructionBiggest: 'सबसे बड़ा खोजें', instructionSmallest: 'सबसे छोटा खोजें' },
+  'gu-IN': { title: 'કદ પ્રમાણે ગોઠવો', instructionBiggest: 'સૌથી મોટું શોધો', instructionSmallest: 'સૌથી નાનું શોધો' },
 };
 
 export default function SizeSorting({ language, onComplete, onBack, onScore }: ActivityProps) {
-  const [items, setItems] = useState<{ id: number; emoji: string; scale: number; isBiggest: boolean }[]>([]);
+  const [items, setItems] = useState<{ id: number; emoji: string; scale: number; isTarget: boolean }[]>([]);
   const [round, setRound] = useState(0);
+  const [targetSize, setTargetSize] = useState<'biggest' | 'smallest'>('biggest');
   const t = TRANSLATIONS[language];
 
   const generateLevel = () => {
     const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
-    const scales = [0.5, 0.7, 1.0, 1.5]; // 1.5 is the biggest
+    const scales = [0.5, 0.7, 1.0, 1.5]; // 1.5 is the biggest, 0.5 is smallest
     const shuffledScales = [...scales].sort(() => Math.random() - 0.5);
+    const newTarget = Math.random() > 0.5 ? 'biggest' : 'smallest';
     
     const newItems = shuffledScales.map((scale, i) => ({
       id: i,
       emoji,
       scale,
-      isBiggest: scale === 1.5,
+      isTarget: newTarget === 'biggest' ? scale === 1.5 : scale === 0.5,
     }));
     
+    setTargetSize(newTarget);
     setItems(newItems);
+    
+    const instruction = newTarget === 'biggest' ? t.instructionBiggest : t.instructionSmallest;
+    playAudio(instruction, language);
   };
 
   useEffect(() => {
     generateLevel();
-    playAudio(t.instruction, language);
   }, []);
 
-  const handleOptionClick = (isBiggest: boolean) => {
-    if (isBiggest) {
+  const handleOptionClick = (isTarget: boolean) => {
+    if (isTarget) {
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       playAudio('Fantastic!', 'en-IN');
       if (onScore) onScore(10);
@@ -59,9 +64,11 @@ export default function SizeSorting({ language, onComplete, onBack, onScore }: A
     }
   };
 
+  const currentInstruction = targetSize === 'biggest' ? t.instructionBiggest : t.instructionSmallest;
+
   return (
     <div className="flex flex-col h-full">
-      <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={onBack} />
+      <ActivityHeader title={t.title} instruction={currentInstruction} language={language} onBack={onBack} />
       
       <div className="flex-1 flex flex-col items-center justify-center gap-16">
         <div className="flex items-end justify-center gap-8 h-64">
@@ -73,7 +80,7 @@ export default function SizeSorting({ language, onComplete, onBack, onScore }: A
               transition={{ type: 'spring', delay: item.id * 0.1 }}
               whileHover={{ scale: 1.1, y: -10 }}
               whileTap={{ scale: 0.9 }}
-              onClick={() => handleOptionClick(item.isBiggest)}
+              onClick={() => handleOptionClick(item.isTarget)}
               className="bg-white rounded-3xl shadow-xl border-4 border-lime-100 flex items-center justify-center hover:border-lime-400 hover:bg-lime-50 transition-all"
               style={{ 
                 width: `${item.scale * 100}px`, 

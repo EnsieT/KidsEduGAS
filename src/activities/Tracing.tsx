@@ -7,25 +7,35 @@ import { playAudio } from '../lib/audio';
 import { Eraser, CheckCircle2, XCircle } from 'lucide-react';
 
 const TRANSLATIONS = {
-  'en-IN': { title: 'Tracing', instruction: 'Trace the letter!', clear: 'Clear', check: 'Check', success: 'Great job!', fail: 'Try again!' },
-  'hi-IN': { title: 'लिखना', instruction: 'अक्षर पर लिखें!', clear: 'साफ़ करें', check: 'जाँचें', success: 'बहुत बढ़िया!', fail: 'फिर से प्रयास करें!' },
-  'gu-IN': { title: 'લખવું', instruction: 'અક્ષર પર લખો!', clear: 'સાફ કરો', check: 'ચકાસો', success: 'ખૂબ સરસ!', fail: 'ફરી પ્રયાસ કરો!' },
+  'en-IN': { title: 'Tracing', instructionLetter: 'Trace the letter!', instructionNumber: 'Trace the number!', clear: 'Clear', check: 'Check', success: 'Great job!', fail: 'Try again!' },
+  'hi-IN': { title: 'लिखना', instructionLetter: 'अक्षर पर लिखें!', instructionNumber: 'संख्या पर लिखें!', clear: 'साफ़ करें', check: 'जाँचें', success: 'बहुत बढ़िया!', fail: 'फिर से प्रयास करें!' },
+  'gu-IN': { title: 'લખવું', instructionLetter: 'અક્ષર પર લખો!', instructionNumber: 'સંખ્યા પર લખો!', clear: 'સાફ કરો', check: 'ચકાસો', success: 'ખૂબ સરસ!', fail: 'ફરી પ્રયાસ કરો!' },
 };
 
-const ITEMS = ['A', 'B', 'C', '1', '2', '3'];
+const ALL_ITEMS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', '1', '2', '3', '4', '5', '6', '7', '8'];
 
 export default function Tracing({ language, onComplete, onBack, onScore }: ActivityProps) {
+  const [items, setItems] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [feedback, setFeedback] = useState<'success' | 'fail' | null>(null);
   const t = TRANSLATIONS[language];
-  const currentItem = ITEMS[currentIndex];
 
   useEffect(() => {
-    playAudio(t.instruction, language);
-    drawTemplate();
-  }, [currentIndex, language, t.instruction]);
+    setItems([...ALL_ITEMS].sort(() => 0.5 - Math.random()).slice(0, 5));
+  }, []);
+
+  const currentItem = items[currentIndex];
+  const isNumber = currentItem && !isNaN(Number(currentItem));
+  const instruction = isNumber ? t.instructionNumber : t.instructionLetter;
+
+  useEffect(() => {
+    if (currentItem) {
+      playAudio(instruction, language);
+      drawTemplate();
+    }
+  }, [currentIndex, language, instruction, currentItem]);
 
   const drawTemplate = () => {
     const canvas = canvasRef.current;
@@ -157,7 +167,7 @@ export default function Tracing({ language, onComplete, onBack, onScore }: Activ
       
       setTimeout(() => {
         setFeedback(null);
-        if (currentIndex + 1 >= ITEMS.length) {
+        if (currentIndex + 1 >= items.length) {
           onComplete();
         } else {
           setCurrentIndex(i => i + 1);
@@ -173,9 +183,11 @@ export default function Tracing({ language, onComplete, onBack, onScore }: Activ
     }
   };
 
+  if (!currentItem) return null;
+
   return (
     <div className="flex flex-col h-full">
-      <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={onBack} />
+      <ActivityHeader title={t.title} instruction={instruction} language={language} onBack={onBack} />
       
       <div className="flex-1 flex flex-col items-center justify-center gap-6 mt-4 bg-pink-50 rounded-3xl border-4 border-pink-200 p-4">
         

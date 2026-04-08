@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Language } from './types';
-import { playAudio } from './lib/audio';
-import { Star, X, ShoppingBag } from 'lucide-react';
+import { playAudio, toggleMute, isMuted as initialMuteState } from './lib/audio';
+import { Star, X, ShoppingBag, Volume2, VolumeX, Home } from 'lucide-react';
 
 import Counting from './activities/Counting';
 import Shapes from './activities/Shapes';
@@ -21,26 +21,26 @@ import Colors from './activities/Colors';
 import SizeSorting from './activities/SizeSorting';
 import SillySentences from './activities/SillySentences';
 import Tracing from './activities/Tracing';
-import Emotions from './activities/Emotions';
+import ShadowMatch from './activities/ShadowMatch';
 
 const ACTIVITIES = [
-  { id: 'counting', emoji: '🔢', color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
-  { id: 'colornum', emoji: '🎨', color: 'bg-blue-400', en: 'Color by Number', hi: 'नंबर से रंग', gu: 'નંબર દ્વારા રંગ', component: ColorByNumber },
+  { id: 'counting', emoji: '1️⃣2️⃣3️⃣', color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
+  { id: 'colornum', emoji: '🖍️', color: 'bg-blue-400', en: 'Color by Number', hi: 'नंबर से रंग', gu: 'નંબર દ્વારા રંગ', component: ColorByNumber },
   { id: 'shapes', emoji: '🔺', color: 'bg-emerald-400', en: 'Shapes', hi: 'आकार', gu: 'આકાર', component: Shapes },
-  { id: 'animals', emoji: '🦁', color: 'bg-amber-400', en: 'Animals', hi: 'जानवर', gu: 'પ્રાણીઓ', component: Animals },
+  { id: 'animals', emoji: '🐶', color: 'bg-amber-400', en: 'Animals', hi: 'जानवर', gu: 'પ્રાણીઓ', component: Animals },
   { id: 'alphabet', emoji: '🔤', color: 'bg-fuchsia-400', en: 'Alphabet', hi: 'वर्णमाला', gu: 'મૂળાક્ષરો', component: Alphabet },
-  { id: 'silly', emoji: '🤪', color: 'bg-orange-400', en: 'Silly Sentences', hi: 'मजेदार वाक्य', gu: 'રમુજી વાક્યો', component: SillySentences },
+  { id: 'silly', emoji: '🗣️', color: 'bg-orange-400', en: 'Silly Sentences', hi: 'मजेदार वाक्य', gu: 'રમુજી વાક્યો', component: SillySentences },
   { id: 'tracing', emoji: '✍️', color: 'bg-pink-500', en: 'Tracing', hi: 'लिखना', gu: 'લખવું', component: Tracing },
-  { id: 'emotions', emoji: '🎭', color: 'bg-yellow-400', en: 'Emotions', hi: 'भावनाएं', gu: 'લાગણીઓ', component: Emotions },
+  { id: 'shadows', emoji: '👤', color: 'bg-yellow-400', en: 'Shadow Match', hi: 'परछाई मिलाओ', gu: 'પડછાયો મેળવો', component: ShadowMatch },
   { id: 'math', emoji: '➕', color: 'bg-indigo-400', en: 'Math', hi: 'गणित', gu: 'ગણિત', component: MathActivity },
-  { id: 'patterns', emoji: '🧩', color: 'bg-teal-400', en: 'Patterns', hi: 'पैटर्न', gu: 'પેટર્ન', component: Patterns },
-  { id: 'odd', emoji: '🔍', color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી अलग', component: OddOneOut },
-  { id: 'memory', emoji: '🧠', color: 'bg-cyan-400', en: 'Memory', hi: 'याददाश्त', gu: 'યાદશક્તિ', component: Memory },
+  { id: 'patterns', emoji: '🔁', color: 'bg-teal-400', en: 'Patterns', hi: 'पैटर्न', gu: 'પેટર્ન', component: Patterns },
+  { id: 'odd', emoji: '❓', color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી अलग', component: OddOneOut },
+  { id: 'memory', emoji: '🃏', color: 'bg-cyan-400', en: 'Memory', hi: 'याददाश्त', gu: 'યાદશક્તિ', component: Memory },
   { id: 'maze', emoji: '🗺️', color: 'bg-lime-400', en: 'Maze', hi: 'भूलभुलैया', gu: 'ભૂલભુલામણી', component: Maze },
-  { id: 'jigsaw', emoji: '🖼️', color: 'bg-sky-400', en: 'Jigsaw', hi: 'जिगसॉ', gu: 'જીગ્સૉ', component: Jigsaw },
+  { id: 'jigsaw', emoji: '🧩', color: 'bg-sky-400', en: 'Jigsaw', hi: 'जिगसॉ', gu: 'જીગ્સૉ', component: Jigsaw },
   { id: 'music', emoji: '🎵', color: 'bg-violet-400', en: 'Music', hi: 'संगीत', gu: 'સંગીત', component: MusicMaker },
   { id: 'wordmatch', emoji: '📖', color: 'bg-yellow-500', en: 'Word Match', hi: 'शब्द मिलान', gu: 'શબ્દ મેળવો', component: WordMatch },
-  { id: 'colors', emoji: '🌈', color: 'bg-red-400', en: 'Colors', hi: 'रंग', gu: 'રંગ', component: Colors },
+  { id: 'colors', emoji: '🎨', color: 'bg-red-400', en: 'Colors', hi: 'रंग', gu: 'રંગ', component: Colors },
   { id: 'sizes', emoji: '📏', color: 'bg-indigo-500', en: 'Size Sorting', hi: 'आकार छाँटें', gu: 'કદ પ્રમાણે ગોઠવો', component: SizeSorting },
 ];
 
@@ -70,6 +70,7 @@ export default function App() {
   const [currentActivity, setCurrentActivity] = useState<string | null>(null);
   const [showCompletion, setShowCompletion] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
+  const [muted, setMuted] = useState(initialMuteState);
   const [unlockedStickers, setUnlockedStickers] = useState<string[]>(() => {
     const saved = localStorage.getItem('edufun_stickers');
     return saved ? JSON.parse(saved) : [];
@@ -193,15 +194,29 @@ export default function App() {
       <div className="relative max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col">
         <header className="flex flex-wrap items-center justify-center sm:justify-between gap-4 mb-8 bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-sm border border-white">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 rotate-3">
-              <span className="text-2xl">🌟</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">
+            <button 
+              onClick={() => setCurrentActivity(null)}
+              className="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 hover:scale-105 hover:rotate-3 transition-all cursor-pointer"
+              aria-label="Home"
+            >
+              <Home className="text-white" size={24} />
+            </button>
+            <h1 
+              className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => setCurrentActivity(null)}
+            >
               Edu<span className="text-indigo-500">Fun</span>
             </h1>
           </div>
           
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setMuted(toggleMute())}
+              className="p-2 sm:p-3 bg-slate-100 text-slate-600 rounded-full hover:bg-slate-200 transition-colors"
+              aria-label={muted ? "Unmute" : "Mute"}
+            >
+              {muted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+            </button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

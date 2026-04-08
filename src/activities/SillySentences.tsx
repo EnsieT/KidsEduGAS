@@ -48,6 +48,12 @@ export default function SillySentences({ language, onComplete, onBack, onScore }
   const t = TRANSLATIONS[language];
 
   useEffect(() => {
+    setSubjectIdx(Math.floor(Math.random() * SUBJECTS.length));
+    setVerbIdx(Math.floor(Math.random() * VERBS.length));
+    setObjectIdx(Math.floor(Math.random() * OBJECTS.length));
+  }, []);
+
+  useEffect(() => {
     playAudio(t.instruction, language);
   }, [language, t.instruction]);
 

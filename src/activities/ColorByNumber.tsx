@@ -100,18 +100,26 @@ const TRANSLATIONS = {
 };
 
 export default function ColorByNumber({ language, onComplete, onBack, onScore }: ActivityProps) {
+  const [levels, setLevels] = useState<typeof LEVELS>([]);
   const [currentLevel, setCurrentLevel] = useState(0);
   const [selectedNum, setSelectedNum] = useState<number | null>(null);
   const [filled, setFilled] = useState<Record<string, string>>({});
   const t = TRANSLATIONS[language];
 
-  const level = LEVELS[currentLevel];
+  useEffect(() => {
+    setLevels([...LEVELS].sort(() => Math.random() - 0.5));
+  }, []);
+
+  const level = levels[currentLevel];
 
   useEffect(() => {
-    playAudio(t.instruction, language);
-  }, [currentLevel]);
+    if (level) {
+      playAudio(t.instruction, language);
+    }
+  }, [currentLevel, language, level, t.instruction]);
 
   const handleRegionClick = (region: typeof LEVELS[0]['regions'][0]) => {
+    if (!level) return;
     if (selectedNum === region.num) {
       const newFilled = { ...filled, [region.id]: region.color };
       setFilled(newFilled);
@@ -124,7 +132,7 @@ export default function ColorByNumber({ language, onComplete, onBack, onScore }:
         setTimeout(() => {
           setFilled({});
           const nextLevel = currentLevel + 1;
-          if (nextLevel >= LEVELS.length) {
+          if (nextLevel >= levels.length) {
             onComplete();
           } else {
             setCurrentLevel(nextLevel);
@@ -135,6 +143,8 @@ export default function ColorByNumber({ language, onComplete, onBack, onScore }:
       playAudio('Wrong color!', 'en-IN');
     }
   };
+
+  if (!level) return null;
 
   return (
     <div className="flex flex-col h-full">
