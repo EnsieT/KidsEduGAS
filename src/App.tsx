@@ -25,29 +25,44 @@ import ShadowMatch from './activities/ShadowMatch';
 import HideAndSeek from './activities/HideAndSeek';
 import BuildAMonster from './activities/BuildAMonster';
 import SpotTheDifference from './activities/SpotTheDifference';
+import FreeDraw from './activities/FreeDraw';
+
+const CATEGORIES = [
+  { id: 'all', en: 'All', hi: 'सभी', gu: 'બધા', icon: '🌟' },
+  { id: 'basics', en: 'Basics', hi: 'बुनियादी', gu: 'મૂળભૂત', icon: '🍎' },
+  { id: 'math', en: 'Math', hi: 'गणित', gu: 'ગણિત', icon: '🔢' },
+  { id: 'reading', en: 'Reading', hi: 'पढ़ना', gu: 'વાંચન', icon: '📚' },
+  { id: 'logic', en: 'Logic', hi: 'तर्क', gu: 'તર્ક', icon: '🧩' },
+  { id: 'creative', en: 'Creative', hi: 'रचनात्मक', gu: 'સર્જનાત્મક', icon: '🎨' },
+];
 
 const ACTIVITIES = [
-  { id: 'counting', emoji: '1️⃣2️⃣3️⃣', color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
-  { id: 'colornum', emoji: '🖍️', color: 'bg-blue-400', en: 'Color by Number', hi: 'नंबर से रंग', gu: 'નંબર દ્વારા રંગ', component: ColorByNumber },
-  { id: 'shapes', emoji: '🔺', color: 'bg-emerald-400', en: 'Shapes', hi: 'आकार', gu: 'આકાર', component: Shapes },
-  { id: 'animals', emoji: '🐶', color: 'bg-amber-400', en: 'Animals', hi: 'जानवर', gu: 'પ્રાણીઓ', component: Animals },
-  { id: 'alphabet', emoji: '🔤', color: 'bg-fuchsia-400', en: 'Alphabet', hi: 'वर्णमाला', gu: 'મૂળાક્ષરો', component: Alphabet },
-  { id: 'silly', emoji: '🗣️', color: 'bg-orange-400', en: 'Silly Sentences', hi: 'मजेदार वाक्य', gu: 'રમુજી વાક્યો', component: SillySentences },
-  { id: 'tracing', emoji: '✍️', color: 'bg-pink-500', en: 'Tracing', hi: 'लिखना', gu: 'લખવું', component: Tracing },
-  { id: 'shadows', emoji: '👤', color: 'bg-yellow-400', en: 'Shadow Match', hi: 'परछाई मिलाओ', gu: 'પડછાયો મેળવો', component: ShadowMatch },
-  { id: 'hideandseek', emoji: '🔎', color: 'bg-green-400', en: 'Hide & Seek', hi: 'लुका-छिपी', gu: 'સંતાકૂકડી', component: HideAndSeek },
-  { id: 'monster', emoji: '👾', color: 'bg-purple-400', en: 'Build a Monster', hi: 'राक्षस बनाएँ', gu: 'મોન્સ્ટર બનાવો', component: BuildAMonster },
-  { id: 'spotdiff', emoji: '👀', color: 'bg-rose-400', en: 'Spot Difference', hi: 'अंतर पहचानें', gu: 'તફાવત શોધો', component: SpotTheDifference },
-  { id: 'math', emoji: '➕', color: 'bg-indigo-400', en: 'Math', hi: 'गणित', gu: 'ગણિત', component: MathActivity },
-  { id: 'patterns', emoji: '🔁', color: 'bg-teal-400', en: 'Patterns', hi: 'पैटर्न', gu: 'પેટર્ન', component: Patterns },
-  { id: 'odd', emoji: '❓', color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી अलग', component: OddOneOut },
-  { id: 'memory', emoji: '🃏', color: 'bg-cyan-400', en: 'Memory', hi: 'याददाश्त', gu: 'યાદશક્તિ', component: Memory },
-  { id: 'maze', emoji: '🗺️', color: 'bg-lime-400', en: 'Maze', hi: 'भूलभुलैया', gu: 'ભૂલભુલામણી', component: Maze },
-  { id: 'jigsaw', emoji: '🧩', color: 'bg-sky-400', en: 'Jigsaw', hi: 'जिगसॉ', gu: 'જીગ્સૉ', component: Jigsaw },
-  { id: 'music', emoji: '🎵', color: 'bg-violet-400', en: 'Music', hi: 'संगीत', gu: 'સંગીત', component: MusicMaker },
-  { id: 'wordmatch', emoji: '📖', color: 'bg-yellow-500', en: 'Word Match', hi: 'शब्द मिलान', gu: 'શબ્દ મેળવો', component: WordMatch },
-  { id: 'colors', emoji: '🎨', color: 'bg-red-400', en: 'Colors', hi: 'रंग', gu: 'રંગ', component: Colors },
-  { id: 'sizes', emoji: '📏', color: 'bg-indigo-500', en: 'Size Sorting', hi: 'आकार छाँटें', gu: 'કદ પ્રમાણે ગોઠવો', component: SizeSorting },
+  { id: 'counting', category: 'basics', emoji: '1️⃣2️⃣3️⃣', color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
+  { id: 'colors', category: 'basics', emoji: '🎨', color: 'bg-red-400', en: 'Colors', hi: 'रंग', gu: 'રંગ', component: Colors },
+  { id: 'shapes', category: 'basics', emoji: '🔺', color: 'bg-emerald-400', en: 'Shapes', hi: 'आकार', gu: 'આકાર', component: Shapes },
+  { id: 'animals', category: 'basics', emoji: '🐶', color: 'bg-amber-400', en: 'Animals', hi: 'जानवर', gu: 'પ્રાણીઓ', component: Animals },
+  
+  { id: 'alphabet', category: 'reading', emoji: '🔤', color: 'bg-fuchsia-400', en: 'Alphabet', hi: 'वर्णमाला', gu: 'મૂળાક્ષરો', component: Alphabet },
+  { id: 'tracing', category: 'reading', emoji: '✍️', color: 'bg-pink-500', en: 'Tracing', hi: 'लिखना', gu: 'લખવું', component: Tracing },
+  { id: 'wordmatch', category: 'reading', emoji: '📖', color: 'bg-yellow-500', en: 'Word Match', hi: 'शब्द मिलान', gu: 'શબ્દ મેળવો', component: WordMatch },
+  { id: 'silly', category: 'reading', emoji: '🗣️', color: 'bg-orange-400', en: 'Silly Sentences', hi: 'मजेदार वाक्य', gu: 'રમુજી વાક્યો', component: SillySentences },
+  
+  { id: 'math', category: 'math', emoji: '➕', color: 'bg-indigo-400', en: 'Math', hi: 'गणित', gu: 'ગણિત', component: MathActivity },
+  { id: 'patterns', category: 'math', emoji: '🔁', color: 'bg-teal-400', en: 'Patterns', hi: 'पैटर्न', gu: 'પેટર્ન', component: Patterns },
+  { id: 'sizes', category: 'math', emoji: '📏', color: 'bg-indigo-500', en: 'Size Sorting', hi: 'आकार छाँटें', gu: 'કદ પ્રમાણે ગોઠવો', component: SizeSorting },
+  
+  { id: 'shadows', category: 'logic', emoji: '👤', color: 'bg-yellow-400', en: 'Shadow Match', hi: 'परछाई मिलाओ', gu: 'પડછાયો મેળવો', component: ShadowMatch },
+  { id: 'hideandseek', category: 'logic', emoji: '🔎', color: 'bg-green-400', en: 'Hide & Seek', hi: 'लुका-छिपी', gu: 'સંતાકૂકડી', component: HideAndSeek },
+  { id: 'spotdiff', category: 'logic', emoji: '👀', color: 'bg-rose-400', en: 'Spot Difference', hi: 'अंतर पहचानें', gu: 'તફાવત શોધો', component: SpotTheDifference },
+  { id: 'odd', category: 'logic', emoji: '❓', color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી अलग', component: OddOneOut },
+  { id: 'memory', category: 'logic', emoji: '🃏', color: 'bg-cyan-400', en: 'Memory', hi: 'याददाश्त', gu: 'યાદશક્તિ', component: Memory },
+  { id: 'maze', category: 'logic', emoji: '🗺️', color: 'bg-lime-400', en: 'Maze', hi: 'भूलभुलैया', gu: 'ભૂલભુલામણી', component: Maze },
+  { id: 'jigsaw', category: 'logic', emoji: '🧩', color: 'bg-sky-400', en: 'Jigsaw', hi: 'जिगसॉ', gu: 'જીગ્સૉ', component: Jigsaw },
+  
+  { id: 'freedraw', category: 'creative', emoji: '🖌️', color: 'bg-pink-400', en: 'Free Draw', hi: 'चित्रकारी', gu: 'ચિત્રકામ', component: FreeDraw },
+  { id: 'colornum', category: 'creative', emoji: '🖍️', color: 'bg-blue-400', en: 'Color by Number', hi: 'नंबर से रंग', gu: 'નંબર દ્વારા રંગ', component: ColorByNumber },
+  { id: 'monster', category: 'creative', emoji: '👾', color: 'bg-purple-400', en: 'Build a Monster', hi: 'राक्षस बनाएँ', gu: 'મોન્સ્ટર બનાવો', component: BuildAMonster },
+  { id: 'music', category: 'creative', emoji: '🎵', color: 'bg-violet-400', en: 'Music', hi: 'संगीत', gu: 'સંગીત', component: MusicMaker },
 ];
 
 const STICKERS = [
@@ -100,6 +115,7 @@ export default function App() {
     const saved = localStorage.getItem('edufun_completed');
     return saved ? JSON.parse(saved) : [];
   });
+  const [activeCategory, setActiveCategory] = useState('all');
 
   useEffect(() => {
     localStorage.setItem('edufun_score', score.toString());
@@ -287,8 +303,25 @@ export default function App() {
                 </div>
 
                 {/* Grid */}
+                <div className="flex gap-2 overflow-x-auto pb-4 hide-scrollbar">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(cat.id)}
+                      className={`px-6 py-3 rounded-full font-bold text-lg whitespace-nowrap transition-all flex items-center gap-2 border-2 ${
+                        activeCategory === cat.id
+                          ? 'bg-indigo-500 text-white border-indigo-600 shadow-md scale-105'
+                          : 'bg-white text-slate-600 border-slate-200 hover:bg-indigo-50 hover:border-indigo-200'
+                      }`}
+                    >
+                      <span>{cat.icon}</span>
+                      {language === 'en-IN' ? cat.en : language === 'hi-IN' ? cat.hi : cat.gu}
+                    </button>
+                  ))}
+                </div>
+
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                  {ACTIVITIES.map((activity, index) => {
+                  {ACTIVITIES.filter(a => activeCategory === 'all' || a.category === activeCategory).map((activity, index) => {
                   const title = language === 'en-IN' ? activity.en : language === 'hi-IN' ? activity.hi : activity.gu;
                   
                   return (
