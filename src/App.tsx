@@ -22,6 +22,9 @@ import SizeSorting from './activities/SizeSorting';
 import SillySentences from './activities/SillySentences';
 import Tracing from './activities/Tracing';
 import ShadowMatch from './activities/ShadowMatch';
+import HideAndSeek from './activities/HideAndSeek';
+import BuildAMonster from './activities/BuildAMonster';
+import SpotTheDifference from './activities/SpotTheDifference';
 
 const ACTIVITIES = [
   { id: 'counting', emoji: '1️⃣2️⃣3️⃣', color: 'bg-rose-400', en: 'Counting', hi: 'गिनती', gu: 'ગણતરી', component: Counting },
@@ -32,6 +35,9 @@ const ACTIVITIES = [
   { id: 'silly', emoji: '🗣️', color: 'bg-orange-400', en: 'Silly Sentences', hi: 'मजेदार वाक्य', gu: 'રમુજી વાક્યો', component: SillySentences },
   { id: 'tracing', emoji: '✍️', color: 'bg-pink-500', en: 'Tracing', hi: 'लिखना', gu: 'લખવું', component: Tracing },
   { id: 'shadows', emoji: '👤', color: 'bg-yellow-400', en: 'Shadow Match', hi: 'परछाई मिलाओ', gu: 'પડછાયો મેળવો', component: ShadowMatch },
+  { id: 'hideandseek', emoji: '🔎', color: 'bg-green-400', en: 'Hide & Seek', hi: 'लुका-छिपी', gu: 'સંતાકૂકડી', component: HideAndSeek },
+  { id: 'monster', emoji: '👾', color: 'bg-purple-400', en: 'Build a Monster', hi: 'राक्षस बनाएँ', gu: 'મોન્સ્ટર બનાવો', component: BuildAMonster },
+  { id: 'spotdiff', emoji: '👀', color: 'bg-rose-400', en: 'Spot Difference', hi: 'अंतर पहचानें', gu: 'તફાવત શોધો', component: SpotTheDifference },
   { id: 'math', emoji: '➕', color: 'bg-indigo-400', en: 'Math', hi: 'गणित', gu: 'ગણિત', component: MathActivity },
   { id: 'patterns', emoji: '🔁', color: 'bg-teal-400', en: 'Patterns', hi: 'पैटर्न', gu: 'પેટર્ન', component: Patterns },
   { id: 'odd', emoji: '❓', color: 'bg-orange-400', en: 'Odd One Out', hi: 'सबसे अलग', gu: 'સૌથી अलग', component: OddOneOut },
