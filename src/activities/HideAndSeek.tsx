@@ -6,28 +6,37 @@ import { ActivityHeader } from '../components/ActivityHeader';
 import { playAudio } from '../lib/audio';
 
 const TRANSLATIONS = {
-  'en-IN': { title: 'Hide & Seek', instruction: 'Find the hidden items!', found: 'Found it!' },
-  'hi-IN': { title: 'लुका-छिपी', instruction: 'छिपी हुई चीजें खोजें!', found: 'मिल गया!' },
-  'gu-IN': { title: 'સંતાકૂકડી', instruction: 'છુપાયેલી વસ્તુઓ શોધો!', found: 'મળી ગયું!' },
+  'en-IN': { title: 'Hide & Seek', instruction: 'Find the hidden items!', found: 'Found it!', select: 'Select a level' },
+  'hi-IN': { title: 'लुका-छिपी', instruction: 'छिपी हुई चीजें खोजें!', found: 'मिल गया!', select: 'एक स्तर चुनें' },
+  'gu-IN': { title: 'સંતાકૂકડી', instruction: 'છુપાયેલી વસ્તુઓ શોધો!', found: 'મળી ગયું!', select: 'સ્તર પસંદ કરો' },
 };
 
-const DISTRACTORS = ['🌳', '☁️', '🍄', '🌻', '🌲', '🏡', '🍎', '🦋', '🌿', '🍂', '🌷', '🌼', '🪵', '🐌', '🐞'];
-const TARGETS_POOL = ['🐶', '🐱', '🦊', '🐰', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵'];
+const LEVELS = [
+  { id: 'forest', targets: ['🐶', '🐱', '🐰'], distractors: ['🌳', '☁️', '🍄', '🌻', '🌲', '🏡', '🍎', '🦋', '🌿', '🍂', '🌷', '🌼', '🪵', '🐌', '🐞'], cols: 8, rows: 6, bg: 'bg-green-50', border: 'border-green-200' },
+  { id: 'ocean', targets: ['🐠', '🐙', '🦀'], distractors: ['🌊', '🐚', '🫧', '🏝️', '⛵', '⚓', '🐟', '🐬', '🐳', '🦈', '🐡', '🦑', '🦐', '🦞', '🐢'], cols: 8, rows: 6, bg: 'bg-blue-50', border: 'border-blue-200' },
+  { id: 'sky', targets: ['🦅', '🚀', '🚁'], distractors: ['☁️', '⭐', '🌙', '☀️', '🎈', '🪁', '✈️', '🛸', '🛰️', '☄️', '🌩️', '🌪️', '🌈', '🕊️', '🦇'], cols: 9, rows: 7, bg: 'bg-sky-50', border: 'border-sky-200' },
+  { id: 'food', targets: ['🍔', '🍕', '🍩'], distractors: ['🍎', '🍌', '🍇', '🥕', '🥦', '🍓', '🍉', '🍒', '🍑', '🍍', '🥝', '🍅', '🌽', '🥑', '🥐'], cols: 9, rows: 7, bg: 'bg-orange-50', border: 'border-orange-200' },
+  { id: 'spooky', targets: ['👻', '🦇', '🕷️'], distractors: ['🎃', '🕸️', '🍬', '🌑', '🥀', '🦉', '💀', '👽', '🧟', '🧛', '🏚️', '🕯️', '🩸', '🦴', '🐈‍⬛'], cols: 10, rows: 8, bg: 'bg-purple-50', border: 'border-purple-200' },
+  { id: 'winter', targets: ['🐧', '🐻‍❄️', '🦭'], distractors: ['❄️', '⛄', '🏔️', '🧣', '🧤', '🧊', '🎿', '🏂', '🛷', '⛸️', '🌨️', '🌲', '🦌', '🦉', '🥶'], cols: 10, rows: 8, bg: 'bg-slate-50', border: 'border-slate-200' },
+];
 
 export default function HideAndSeek({ language, onComplete, onBack, onScore }: ActivityProps) {
-  const [targets, setTargets] = useState<{ id: string; emoji: string; col: number; row: number }[]>([]);
-  const [distractors, setDistractors] = useState<{ id: string; emoji: string; col: number; row: number }[]>([]);
+  const [selectedLevelId, setSelectedLevelId] = useState<string | null>(null);
+  const [levelIdx, setLevelIdx] = useState(0);
+  const [targets, setTargets] = useState<{ id: string; emoji: string; col: number; row: number; jitterX: number; jitterY: number }[]>([]);
+  const [distractors, setDistractors] = useState<{ id: string; emoji: string; col: number; row: number; jitterX: number; jitterY: number }[]>([]);
   const [found, setFound] = useState<string[]>([]);
-  const [round, setRound] = useState(0);
-  const t = TRANSLATIONS[language];
+  const t = TRANSLATIONS[language as keyof typeof TRANSLATIONS] || TRANSLATIONS['en-IN'];
+
+  const level = LEVELS[levelIdx];
 
   const generateLevel = () => {
-    // 8 columns x 6 rows grid = 48 slots
-    const slots = Array.from({ length: 48 }, (_, i) => ({ col: i % 8, row: Math.floor(i / 8) }));
+    if (!selectedLevelId) return;
+    const totalSlots = level.cols * level.rows;
+    const slots = Array.from({ length: totalSlots }, (_, i) => ({ col: i % level.cols, row: Math.floor(i / level.cols) }));
     const shuffledSlots = slots.sort(() => Math.random() - 0.5);
     
-    // Pick 3 targets
-    const shuffledTargets = [...TARGETS_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
+    const shuffledTargets = [...level.targets].sort(() => Math.random() - 0.5);
     const newTargets = shuffledTargets.map((emoji, i) => ({
       id: `target-${i}`,
       emoji,
@@ -37,12 +46,11 @@ export default function HideAndSeek({ language, onComplete, onBack, onScore }: A
       jitterY: (Math.random() - 0.5) * 4,
     }));
 
-    // Pick 45 distractors to fill the rest of the grid
     const newDistractors = [];
-    for (let i = 3; i < 48; i++) {
+    for (let i = level.targets.length; i < totalSlots; i++) {
       newDistractors.push({
         id: `distractor-${i}`,
-        emoji: DISTRACTORS[Math.floor(Math.random() * DISTRACTORS.length)],
+        emoji: level.distractors[Math.floor(Math.random() * level.distractors.length)],
         col: shuffledSlots[i].col,
         row: shuffledSlots[i].row,
         jitterX: (Math.random() - 0.5) * 4,
@@ -56,9 +64,17 @@ export default function HideAndSeek({ language, onComplete, onBack, onScore }: A
   };
 
   useEffect(() => {
-    generateLevel();
-    playAudio(t.instruction, language);
-  }, [round, language, t.instruction]);
+    if (selectedLevelId) {
+      generateLevel();
+      playAudio(t.instruction, language);
+    }
+  }, [selectedLevelId, language, t.instruction]);
+
+  const handleLevelSelect = (id: string) => {
+    const idx = LEVELS.findIndex(l => l.id === id);
+    setLevelIdx(idx);
+    setSelectedLevelId(id);
+  };
 
   const handleTargetClick = (id: string) => {
     if (found.includes(id)) return;
@@ -73,11 +89,7 @@ export default function HideAndSeek({ language, onComplete, onBack, onScore }: A
       if (onScore) onScore(15);
       
       setTimeout(() => {
-        if (round < 2) {
-          setRound(r => r + 1);
-        } else {
-          onComplete();
-        }
+        setSelectedLevelId(null);
       }, 3000);
     }
   };
@@ -86,13 +98,37 @@ export default function HideAndSeek({ language, onComplete, onBack, onScore }: A
     playAudio('Boing', 'en-IN');
   };
 
+  if (!selectedLevelId) {
+    return (
+      <div className="flex flex-col h-full">
+        <ActivityHeader title={t.title} instruction={t.select || "Select a level"} language={language} onBack={onBack} />
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-4xl w-full">
+            {LEVELS.map((l) => (
+              <motion.button
+                key={l.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleLevelSelect(l.id)}
+                className={`bg-white p-6 rounded-3xl shadow-xl border-4 ${l.border} flex flex-col items-center gap-4 hover:opacity-80 transition-opacity`}
+              >
+                <div className="text-6xl">{l.targets[0]}</div>
+                <span className="font-bold text-slate-700 uppercase tracking-wider">{l.id}</span>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-full">
-      <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={onBack} />
+      <ActivityHeader title={t.title} instruction={t.instruction} language={language} onBack={() => setSelectedLevelId(null)} />
       
       <div className="flex-1 flex flex-col items-center justify-center gap-4 mt-4">
         {/* Targets to find */}
-        <div className="flex gap-4 bg-white/80 p-4 rounded-2xl shadow-sm border-2 border-green-200">
+        <div className={`flex gap-4 bg-white/80 p-4 rounded-2xl shadow-sm border-2 ${level.border}`}>
           {targets.map(t => (
             <div 
               key={t.id} 
@@ -104,12 +140,12 @@ export default function HideAndSeek({ language, onComplete, onBack, onScore }: A
         </div>
 
         {/* Play Area */}
-        <div className="relative w-full max-w-3xl aspect-[4/3] bg-green-50 rounded-3xl border-4 border-green-200 overflow-hidden shadow-inner">
+        <div className={`relative w-full max-w-4xl aspect-[4/3] ${level.bg} rounded-3xl border-4 ${level.border} overflow-hidden shadow-inner`}>
           {distractors.map(d => (
             <motion.div
               key={d.id}
-              className="absolute text-3xl sm:text-4xl md:text-5xl cursor-pointer select-none"
-              style={{ left: `calc(${(d.col / 8) * 100}% + ${d.jitterX}%)`, top: `calc(${(d.row / 6) * 100}% + ${d.jitterY}%)`, marginLeft: '1%', marginTop: '1%' }}
+              className="absolute text-2xl sm:text-3xl md:text-4xl cursor-pointer select-none"
+              style={{ left: `calc(${(d.col / level.cols) * 100}% + ${d.jitterX}%)`, top: `calc(${(d.row / level.rows) * 100}% + ${d.jitterY}%)`, marginLeft: '1%', marginTop: '1%' }}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleDistractorClick}
@@ -121,8 +157,8 @@ export default function HideAndSeek({ language, onComplete, onBack, onScore }: A
           {targets.map(t => (
             <motion.div
               key={t.id}
-              className="absolute text-3xl sm:text-4xl md:text-5xl cursor-pointer select-none z-10"
-              style={{ left: `calc(${(t.col / 8) * 100}% + ${t.jitterX}%)`, top: `calc(${(t.row / 6) * 100}% + ${t.jitterY}%)`, marginLeft: '1%', marginTop: '1%' }}
+              className="absolute text-2xl sm:text-3xl md:text-4xl cursor-pointer select-none z-10"
+              style={{ left: `calc(${(t.col / level.cols) * 100}% + ${t.jitterX}%)`, top: `calc(${(t.row / level.rows) * 100}% + ${t.jitterY}%)`, marginLeft: '1%', marginTop: '1%' }}
               whileHover={{ scale: 1.2 }}
               whileTap={{ scale: 0.8 }}
               onClick={() => handleTargetClick(t.id)}

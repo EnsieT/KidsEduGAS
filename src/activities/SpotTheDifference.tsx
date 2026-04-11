@@ -216,6 +216,192 @@ const LEVELS = [
       { id: 'sun', cx: 160, cy: 40, r: 25 },
       { id: 'pig', cx: 150, cy: 150, r: 20 },
     ]
+  },
+  {
+    id: 'desert',
+    renderLeft: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="120" fill="#fde047" />
+        <rect y="120" width="200" height="80" fill="#fef08a" />
+        <circle cx="160" cy="40" r="20" fill="#f97316" />
+        <rect x="40" y="80" width="15" height="60" fill="#22c55e" rx="5" />
+        <rect x="25" y="100" width="15" height="10" fill="#22c55e" rx="3" />
+        <rect x="55" y="90" width="15" height="10" fill="#22c55e" rx="3" />
+        <polygon points="120,120 150,60 180,120" fill="#fbbf24" />
+      </svg>
+    ),
+    renderRight: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="120" fill="#fde047" />
+        <rect y="120" width="200" height="80" fill="#fef08a" />
+        <circle cx="160" cy="40" r="20" fill="#f97316" />
+        {/* Diff 1: Cactus missing left arm */}
+        <rect x="40" y="80" width="15" height="60" fill="#22c55e" rx="5" />
+        <rect x="55" y="90" width="15" height="10" fill="#22c55e" rx="3" />
+        {/* Diff 2: Pyramid is taller */}
+        <polygon points="120,120 150,40 180,120" fill="#fbbf24" />
+        {/* Diff 3: Extra cloud */}
+        <circle cx="60" cy="30" r="10" fill="#fff" />
+        <circle cx="75" cy="30" r="15" fill="#fff" />
+        <circle cx="90" cy="30" r="10" fill="#fff" />
+      </svg>
+    ),
+    differences: [
+      { id: 'arm', cx: 30, cy: 105, r: 15 },
+      { id: 'pyramid', cx: 150, cy: 50, r: 20 },
+      { id: 'cloud', cx: 75, cy: 30, r: 25 },
+    ]
+  },
+  {
+    id: 'snow',
+    renderLeft: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#bae6fd" />
+        <rect y="140" width="200" height="60" fill="#fff" />
+        <circle cx="100" cy="130" r="25" fill="#fff" />
+        <circle cx="100" cy="90" r="18" fill="#fff" />
+        <circle cx="100" cy="60" r="14" fill="#fff" />
+        <circle cx="95" cy="55" r="2" fill="#000" />
+        <circle cx="105" cy="55" r="2" fill="#000" />
+        <polygon points="100,60 115,65 100,65" fill="#f97316" />
+        <rect x="85" y="40" width="30" height="10" fill="#1e293b" />
+        <rect x="90" y="20" width="20" height="20" fill="#1e293b" />
+        <polygon points="30,140 50,80 70,140" fill="#166534" />
+      </svg>
+    ),
+    renderRight: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#bae6fd" />
+        <rect y="140" width="200" height="60" fill="#fff" />
+        <circle cx="100" cy="130" r="25" fill="#fff" />
+        <circle cx="100" cy="90" r="18" fill="#fff" />
+        <circle cx="100" cy="60" r="14" fill="#fff" />
+        <circle cx="95" cy="55" r="2" fill="#000" />
+        <circle cx="105" cy="55" r="2" fill="#000" />
+        {/* Diff 1: Carrot nose points other way */}
+        <polygon points="100,60 85,65 100,65" fill="#f97316" />
+        {/* Diff 2: Hat is red */}
+        <rect x="85" y="40" width="30" height="10" fill="#ef4444" />
+        <rect x="90" y="20" width="20" height="20" fill="#ef4444" />
+        {/* Diff 3: Tree is taller */}
+        <polygon points="30,140 50,60 70,140" fill="#166534" />
+      </svg>
+    ),
+    differences: [
+      { id: 'nose', cx: 90, cy: 65, r: 15 },
+      { id: 'hat', cx: 100, cy: 30, r: 25 },
+      { id: 'tree', cx: 50, cy: 70, r: 20 },
+    ]
+  },
+  {
+    id: 'castle',
+    renderLeft: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#7dd3fc" />
+        <rect y="160" width="200" height="40" fill="#4ade80" />
+        <rect x="60" y="80" width="80" height="80" fill="#94a3b8" />
+        <rect x="50" y="60" width="30" height="100" fill="#64748b" />
+        <rect x="120" y="60" width="30" height="100" fill="#64748b" />
+        <polygon points="50,60 65,30 80,60" fill="#ef4444" />
+        <polygon points="120,60 135,30 150,60" fill="#ef4444" />
+        <rect x="85" y="120" width="30" height="40" fill="#475569" rx="15" />
+        <circle cx="30" cy="40" r="15" fill="#fff" />
+      </svg>
+    ),
+    renderRight: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#7dd3fc" />
+        <rect y="160" width="200" height="40" fill="#4ade80" />
+        <rect x="60" y="80" width="80" height="80" fill="#94a3b8" />
+        <rect x="50" y="60" width="30" height="100" fill="#64748b" />
+        <rect x="120" y="60" width="30" height="100" fill="#64748b" />
+        {/* Diff 1: Left roof is blue */}
+        <polygon points="50,60 65,30 80,60" fill="#3b82f6" />
+        <polygon points="120,60 135,30 150,60" fill="#ef4444" />
+        {/* Diff 2: Door is taller */}
+        <rect x="85" y="100" width="30" height="60" fill="#475569" rx="15" />
+        {/* Diff 3: Cloud moved right */}
+        <circle cx="170" cy="40" r="15" fill="#fff" />
+      </svg>
+    ),
+    differences: [
+      { id: 'roof', cx: 65, cy: 45, r: 20 },
+      { id: 'door', cx: 100, cy: 110, r: 15 },
+      { id: 'cloud', cx: 170, cy: 40, r: 25 },
+    ]
+  },
+  {
+    id: 'undersea',
+    renderLeft: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#0284c7" />
+        <rect y="170" width="200" height="30" fill="#fcd34d" />
+        <circle cx="100" cy="100" r="30" fill="#facc15" />
+        <rect x="130" y="90" width="20" height="20" fill="#facc15" />
+        <circle cx="110" cy="90" r="5" fill="#0ea5e9" />
+        <path d="M 30 200 Q 40 150 30 120" stroke="#22c55e" strokeWidth="5" fill="none" />
+        <path d="M 50 200 Q 60 160 50 140" stroke="#22c55e" strokeWidth="5" fill="none" />
+        <circle cx="150" cy="50" r="4" fill="#fff" opacity="0.5" />
+        <circle cx="160" cy="30" r="6" fill="#fff" opacity="0.5" />
+      </svg>
+    ),
+    renderRight: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#0284c7" />
+        <rect y="170" width="200" height="30" fill="#fcd34d" />
+        {/* Diff 1: Submarine is orange */}
+        <circle cx="100" cy="100" r="30" fill="#f97316" />
+        <rect x="130" y="90" width="20" height="20" fill="#f97316" />
+        <circle cx="110" cy="90" r="5" fill="#0ea5e9" />
+        <path d="M 30 200 Q 40 150 30 120" stroke="#22c55e" strokeWidth="5" fill="none" />
+        {/* Diff 2: Missing seaweed */}
+        {/* Diff 3: Extra bubble */}
+        <circle cx="150" cy="50" r="4" fill="#fff" opacity="0.5" />
+        <circle cx="160" cy="30" r="6" fill="#fff" opacity="0.5" />
+        <circle cx="140" cy="70" r="5" fill="#fff" opacity="0.5" />
+      </svg>
+    ),
+    differences: [
+      { id: 'sub', cx: 100, cy: 100, r: 35 },
+      { id: 'seaweed', cx: 50, cy: 170, r: 20 },
+      { id: 'bubble', cx: 140, cy: 70, r: 15 },
+    ]
+  },
+  {
+    id: 'park',
+    renderLeft: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#bbf7d0" />
+        <path d="M 0 100 Q 100 120 200 100 L 200 200 L 0 200 Z" fill="#86efac" />
+        <rect x="40" y="120" width="60" height="10" fill="#b45309" />
+        <rect x="45" y="130" width="5" height="20" fill="#78350f" />
+        <rect x="90" y="130" width="5" height="20" fill="#78350f" />
+        <circle cx="150" cy="140" r="30" fill="#3b82f6" />
+        <circle cx="150" cy="140" r="20" fill="#60a5fa" />
+        <polygon points="150,140 145,110 155,110" fill="#bfdbfe" />
+        <circle cx="30" cy="40" r="20" fill="#fef08a" />
+      </svg>
+    ),
+    renderRight: () => (
+      <svg viewBox="0 0 200 200" className="w-full h-full rounded-2xl">
+        <rect width="200" height="200" fill="#bbf7d0" />
+        <path d="M 0 100 Q 100 120 200 100 L 200 200 L 0 200 Z" fill="#86efac" />
+        <rect x="40" y="120" width="60" height="10" fill="#b45309" />
+        <rect x="45" y="130" width="5" height="20" fill="#78350f" />
+        {/* Diff 1: Missing bench leg */}
+        <circle cx="150" cy="140" r="30" fill="#3b82f6" />
+        <circle cx="150" cy="140" r="20" fill="#60a5fa" />
+        {/* Diff 2: Fountain water is taller */}
+        <polygon points="150,140 140,90 160,90" fill="#bfdbfe" />
+        {/* Diff 3: Sun is orange */}
+        <circle cx="30" cy="40" r="20" fill="#fb923c" />
+      </svg>
+    ),
+    differences: [
+      { id: 'leg', cx: 92, cy: 140, r: 15 },
+      { id: 'water', cx: 150, cy: 100, r: 20 },
+      { id: 'sun', cx: 30, cy: 40, r: 25 },
+    ]
   }
 ];
 
